@@ -26,7 +26,7 @@ RUN git clone -c advice.detachedHead=false \
 	--single-branch https://gitlab.freedesktop.org/gstreamer/gst-plugins-rs.git \
 	/usr/src/gst-plugins-rs
 
-RUN export CSOUND_LIB_DIR="/usr/lib/$(uname -m)-linux-gnu"
+RUN export CSOUND_LIB_DIR="/usr/lib/$(uname -m)-linux-gnu" && \
     make && \
     make install
 
