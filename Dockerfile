@@ -9,7 +9,6 @@ ARG GST_PLUGINS_RS_VERSION
 
 WORKDIR /usr/src/gst-plugins-rs
 
-ENV CSOUND_LIB_DIR /usr/lib/x86_64-linux-gnu/
 ENV PLUGINS_DIR /opt/gst-plugins-rs
 ENV CARGO_PROFILE_RELEASE_DEBUG false
 
@@ -27,7 +26,8 @@ RUN git clone -c advice.detachedHead=false \
 	--single-branch https://gitlab.freedesktop.org/gstreamer/gst-plugins-rs.git \
 	/usr/src/gst-plugins-rs
 
-RUN make && \
+RUN export CSOUND_LIB_DIR="/usr/lib/$(uname -m)-linux-gnu"
+    make && \
     make install
 
 FROM scratch as release
