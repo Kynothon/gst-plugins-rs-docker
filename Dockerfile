@@ -5,7 +5,7 @@ ARG GST_PLUGINS_RS_TAG=master
 FROM rust:${RUST_VERSION}-${DEBIAN_VERSION} as builder
 
 # https://ryandaniels.ca/blog/docker-dockerfile-arg-from-arg-trouble/
-ARG GST_PLUGINS_RS_VERSION
+ARG GST_PLUGINS_RS_TAG
 
 WORKDIR /usr/src/gst-plugins-rs
 
