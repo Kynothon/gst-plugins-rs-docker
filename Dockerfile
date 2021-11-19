@@ -1,6 +1,6 @@
 ARG RUST_VERSION=1.56
 ARG DEBIAN_VERSION=bullseye
-ARG GST_PLUGINS_RS_VERSION=latest
+ARG GST_PLUGINS_RS_TAG=master
 
 FROM rust:${RUST_VERSION}-${DEBIAN_VERSION} as builder
 
@@ -22,7 +22,7 @@ RUN apt update \
 	libdav1d-dev 
 
 RUN git clone -c advice.detachedHead=false \
-	--branch ${GST_PLUGINS_RS_VERSION} \
+	--branch ${GST_PLUGINS_RS_TAG} \
 	--single-branch https://gitlab.freedesktop.org/gstreamer/gst-plugins-rs.git \
 	/usr/src/gst-plugins-rs
 
