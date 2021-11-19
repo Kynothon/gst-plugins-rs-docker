@@ -19,7 +19,8 @@ RUN apt update \
         libcsound64-dev \
 	libclang-11-dev \
  	libpango1.0-dev  \
-	libdav1d-dev 
+	libdav1d-dev  
+	# libgtk-4-dev # Only in bookworm
 
 RUN git clone -c advice.detachedHead=false \
 	--branch ${GST_PLUGINS_RS_TAG} \
@@ -31,7 +32,7 @@ COPY csound-sys.patch csound-sys.patch
 RUN  patch -ruN < ./csound-sys.patch
 
 RUN export CSOUND_LIB_DIR="/usr/lib/$(uname -m)-linux-gnu" && \
-    make && \
+    cargo build --release --workspace --exclude 'gst-plugin-gtk4' --exclude 'gst-plugin-tutorial' && \
     make install
 
 FROM scratch as release
