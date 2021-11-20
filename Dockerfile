@@ -34,9 +34,8 @@ RUN  patch -ruN < ./csound-sys.patch
 RUN export CSOUND_LIB_DIR="/usr/lib/$(uname -m)-linux-gnu" && \
     export PLUGINS_DIR=$(pkg-config --variable=pluginsdir gstreamer-1.0) && \
     export SO_SUFFIX=so && \
-    cargo build --release --workspace \
-    	--exclude 'gst-plugin-gtk4' \
-	--exclude 'gst-plugin-tutorial' \
+    cargo build --release  \
+    	--package gst-plugin-rusoto \
 	&&  \
     install -d ${DEST_DIR}/${PLUGINS_DIR} && \
     install -m 755 target/release/*.${SO_SUFFIX} ${DEST_DIR}${PLUGINS_DIR}
