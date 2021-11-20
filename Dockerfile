@@ -9,7 +9,7 @@ ARG GST_PLUGINS_RS_TAG
 
 WORKDIR /usr/src/gst-plugins-rs
 
-ENV PLUGINS_DIR /opt/gst-plugins-rs
+ENV DEST_DIR /opt/gst-plugins-rs
 ENV CARGO_PROFILE_RELEASE_DEBUG false
 
 RUN apt update \
@@ -38,9 +38,9 @@ RUN export CSOUND_LIB_DIR="/usr/lib/$(uname -m)-linux-gnu" && \
     	--exclude 'gst-plugin-gtk4' \
 	--exclude 'gst-plugin-tutorial' \
 	&&  \
-    install -d ${PLUGINS_DIR} && \
-    install -m 755 target/release/*.${SO_SUFFIX} ${PLUGINS_DIR}
+    install -d ${DEST_DIR}/${PLUGINS_DIR} && \
+    install -m 755 target/release/*.${SO_SUFFIX} ${DEST_DIR}${PLUGINS_DIR}
 
 FROM scratch as release
 
-COPY --from=builder /opt/gst-plugins-rs /usr/lib/x86_64-linux-gnu/gstreamer-1.0
+COPY --from=builder /opt/gst-plugins-rs/* /
