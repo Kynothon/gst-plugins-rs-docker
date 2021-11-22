@@ -70,4 +70,4 @@ RUN export CSOUND_LIB_DIR="/usr/lib/$(uname -m)-linux-gnu" && \
 
 FROM scratch as release
 
-COPY --from=builder /opt/gst-plugins-rs/* /
+COPY --from=builder /opt/gst-plugins-rs/ /
