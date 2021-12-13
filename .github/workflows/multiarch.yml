@@ -73,7 +73,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           platforms: linux/amd64
           context: .
-          file: Dockerfile.arm
+          file: Dockerfile.arch
           push: false
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
