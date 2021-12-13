@@ -84,7 +84,9 @@ jobs:
       
       - name: AMD64
         id: x86_64
-        run: docker manifest annotate --arch amd64 --os linux ${{ steps.meta.output.tags }}-amd64 ${{ steps.meta.output.tags }}  
+        env:
+          output_tags: ${{ steps.meta.output.tags }}
+        run: docker manifest annotate --arch amd64 --os linux ${output_tags}-amd64 ${{ output_tags }}  
 
       - name: Push
         id: docker_push
