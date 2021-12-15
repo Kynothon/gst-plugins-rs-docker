@@ -75,7 +75,7 @@ jobs:
           context: .
           file: Dockerfile.arch
           push: false
-          tags: ${{ steps.meta.outputs.tags }} amd64
+          tags: ${{ steps.meta.outputs.tags }}-amd64
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             "ARCHITECTURE=amd64"
