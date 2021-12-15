@@ -85,5 +85,5 @@ jobs:
       - name: Push
         id: docker_push
         run: 
-          docker push ${{ steps.meta.outputs.tags }}
+          docker push ${{ steps.meta.outputs.tags }}-amd64
 
