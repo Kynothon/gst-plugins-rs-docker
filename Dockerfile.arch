@@ -83,6 +83,6 @@ RUN export CSOUND_LIB_DIR="/usr/lib/$(uname -m)-linux-gnu" && \
     install -v -d ${DEST_DIR}/${PLUGINS_DIR} && \
     install -v -m 755 target/${CARGO_BUILD_TARGET}/release/*.${SO_SUFFIX} ${DEST_DIR}${PLUGINS_DIR}
 
-FROM --platform linux/${ARCHITECTURE} scratch as release
+FROM --platform=linux/${ARCHITECTURE} scratch as release
 
 COPY --from=builder /opt/gst-plugins-rs/ /
