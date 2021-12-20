@@ -74,16 +74,11 @@ jobs:
           platforms: linux/amd64
           context: .
           file: Dockerfile.arch
-          push: false
+          push: true
           tags: ${{ steps.meta.outputs.tags }}-amd64
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             "ARCHITECTURE=amd64"
             "GCC_BUILD_TARGET=x86_64-linux-gnu"
             "CARGO_BUILD_TARGET=x86_64-unknown-linux-gnu"
-    
-      - name: Push
-        id: docker_push
-        run: 
-          docker push ${{ steps.meta.outputs.tags }}-amd64
 
