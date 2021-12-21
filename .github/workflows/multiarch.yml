@@ -138,6 +138,6 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             "ARCHITECTURE=arm64"
-            "GCC_BUILD_TARGET=arm64-linux-gnu"
-            "CARGO_BUILD_TARGET=arm64-unknown-linux-gnu"
+            "GCC_BUILD_TARGET=aarch64-linux-gnu"
+            "CARGO_BUILD_TARGET=aarch64-unknown-linux-gnu"
 
