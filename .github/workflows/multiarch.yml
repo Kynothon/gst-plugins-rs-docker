@@ -151,7 +151,7 @@ jobs:
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
       - name: Extract Docker metadata
-        id: multiarch
+        id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
@@ -159,8 +159,8 @@ jobs:
         
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
-      - name: Extract Docker metadata
-        id: amd64
+      - name: Extract Docker metadata for AMD64
+        id: meta_amd64
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
@@ -168,8 +168,8 @@ jobs:
       
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
-      - name: Extract Docker metadata
-        id: meta
+      - name: Extract Docker metadata for ARM64
+        id: meta_arm64
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
@@ -184,16 +184,16 @@ jobs:
 
       - name: AMD64
         id: x86_64
-        run: docker manifest annotate --arch amd64 --os linux ${{ steps.mutliarch.outputs.tags }} ${{ steps.amd64.outputs.tags }}
+        run: docker manifest annotate --arch amd64 --os linux ${{ steps.meta.outputs.tags }} ${{ steps.meta_amd64.outputs.tags }}
         
       - name: ARM64
         id: arm64
-        run: docker manifest annotate --arch arm64 --variant v8 --os linux ${{ steps.mutliarch.outputs.tags }} ${{ steps.arm64.outputs.tags }}
+        run: docker manifest annotate --arch arm64 --variant v8 --os linux ${{ steps.meta.outputs.tags }} ${{ steps.meta_arm64.outputs.tags }}
 
       - name: Push Manifest
         id: docker_push
-        run: docker manifest push ${{ steps.multiarch.outputs.tags }}
+        run: docker manifest push ${{ steps.meta.outputs.tags }}
         
       - name: Inspect Manifest
         id: docker_inspect
-        run: docker manifest inspect ${{ steps.multiarch.outputs.tags }}
+        run: docker manifest inspect ${{ steps.meta.outputs.tags }}
