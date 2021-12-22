@@ -1,6 +1,6 @@
 ARG RUST_VERSION=1.57
 ARG DEBIAN_VERSION=bullseye
-ARG GST_PLUGINS_RS_TAG=69bb09f7 
+ARG GST_PLUGINS_RS_TAG=master
 ARG CARGO_BUILD_TARGET=x86_64-unknown-linux-gnu
 ARG GCC_BUILD_TARGET=x86_6464-linux-gnu
 ARG ARCHITECTURE=amd64
@@ -50,35 +50,35 @@ RUN export CSOUND_LIB_DIR="/usr/lib/$(uname -m)-linux-gnu" && \
     export SO_SUFFIX=so && \
     export CARGO_TARGET_$(echo ${CARGO_BUILD_TARGET} | tr '[:lower:]-' '[:upper:]_')_LINKER=${GCC_BUILD_TARGET}-gcc && \
     cargo build --release \
-#    --package gst-plugin-webp \
-#    --package gst-plugin-videofx \
-#    --package gst-plugin-rspng \
-#    --package gst-plugin-rav1e \
-#    --package gst-plugin-hsv \
+    --package gst-plugin-webp \
+    --package gst-plugin-videofx \
+    --package gst-plugin-rspng \
+    --package gst-plugin-rav1e \
+    --package gst-plugin-hsv \
 ##    --package gst-plugin-gtk4 \
-#    --package gst-plugin-gif \
-#    --package gst-plugin-flavors \
-#    --package gst-plugin-ffv1 \
-#    --package gst-plugin-dav1d \
-#    --package gst-plugin-closedcaption \
-#    --package gst-plugin-cdg \
-#    --package gst-plugin-togglerecord \
-#    --package gst-plugin-fallbackswitch \
+    --package gst-plugin-gif \
+    --package gst-plugin-flavors \
+    --package gst-plugin-ffv1 \
+    --package gst-plugin-dav1d \
+    --package gst-plugin-closedcaption \
+    --package gst-plugin-cdg \
+    --package gst-plugin-togglerecord \
+    --package gst-plugin-fallbackswitch \
 ##    --package gst-plugin-tutorial \
-#    --package gst-plugin-textwrap \
-#    --package gst-plugin-regex \
-#    --package gst-plugin-json \
+    --package gst-plugin-textwrap \
+    --package gst-plugin-regex \
+    --package gst-plugin-json \
     --package gst-plugin-rusoto \
-#    --package gst-plugin-reqwest \
-#    --package gst-plugin-hlssink3 \
-#    --package gst-plugin-threadshare \
-#    --package gst-plugin-sodium \
-#    --package gst-plugin-fmp4 \
-#    --package gst-plugin-file \
-#    --package gst-plugin-lewton \
-#    --package gst-plugin-csound \
-#    --package gst-plugin-claxon \
-#    --package gst-plugin-audiofx \
+    --package gst-plugin-reqwest \
+    --package gst-plugin-hlssink3 \
+    --package gst-plugin-threadshare \
+    --package gst-plugin-sodium \
+    --package gst-plugin-fmp4 \
+    --package gst-plugin-file \
+    --package gst-plugin-lewton \
+    --package gst-plugin-csound \
+    --package gst-plugin-claxon \
+    --package gst-plugin-audiofx \
 	&&  \
     install -v -d ${DEST_DIR}/${PLUGINS_DIR} && \
     install -v -m 755 target/${CARGO_BUILD_TARGET}/release/*.${SO_SUFFIX} ${DEST_DIR}${PLUGINS_DIR}
