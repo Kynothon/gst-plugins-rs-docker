@@ -2,7 +2,7 @@ ARG RUST_VERSION=1.57
 ARG DEBIAN_VERSION=bullseye
 ARG GST_PLUGINS_RS_TAG=master
 ARG CARGO_BUILD_TARGET=x86_64-unknown-linux-gnu
-ARG GCC_BUILD_TARGET=x86_6464-linux-gnu
+ARG GCC_BUILD_TARGET=x86_64-linux-gnu
 ARG ARCHITECTURE=amd64
 
 FROM rust:${RUST_VERSION}-${DEBIAN_VERSION} as builder
@@ -45,7 +45,7 @@ RUN git clone -c advice.detachedHead=false \
 COPY csound-sys.patch csound-sys.patch
 RUN  patch -ruN < ./csound-sys.patch
 
-RUN export CSOUND_LIB_DIR="/usr/lib/$(uname -m)-linux-gnu" && \
+RUN export CSOUND_LIB_DIR="/usr/lib/${GCC_BUILD_TARGET}" && \
     export PLUGINS_DIR=$(pkg-config --variable=pluginsdir gstreamer-1.0) && \
     export SO_SUFFIX=so && \
     export CARGO_TARGET_$(echo ${CARGO_BUILD_TARGET} | tr '[:lower:]-' '[:upper:]_')_LINKER=${GCC_BUILD_TARGET}-gcc && \
