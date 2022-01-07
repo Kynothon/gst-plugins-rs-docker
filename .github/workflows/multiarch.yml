@@ -1,4 +1,4 @@
-name: Multi Arch Docker
+name: CrossCompiled MultiArch Docker
 
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
@@ -8,8 +8,10 @@ name: Multi Arch Docker
 on:
   push:
     branches: [ master ]
-  # Publish semver tags as releases.
+    # Publish semver tags as releases.
     tags: [ '*' ]
+  pull_request:
+    branches: [ master ]
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -19,7 +21,7 @@ env:
 
 
 jobs:
-  amd64:
+  build:
 
     runs-on: ubuntu-latest
     permissions:
@@ -40,119 +42,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@master
-        with:
-          platforms: all
-
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@master
-        
-      # Extract metadata (tags, labels) for Docker
-      # https://github.com/docker/metadata-action
-      - name: Extract Docker metadata
-        id: meta
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}-amd64
-            type=semver,pattern={{major}}.{{minor}}-amd64
-
-      # Build and push Docker image with Buildx (don't push on PR)
-      # https://github.com/docker/build-push-action
-      - name: Build Docker image
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
-        with:
-          builder: ${{ steps.buildx.outputs.name }}
-          platforms: linux/amd64
-          context: .
-          file: Dockerfile.arch
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          build-args: |
-            "ARCHITECTURE=amd64"
-            "GCC_BUILD_TARGET=x86_64-linux-gnu"
-            "CARGO_BUILD_TARGET=x86_64-unknown-linux-gnu"
-
-  arm64:
-
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      # Login against a Docker registry except on PR
-      # https://github.com/docker/login-action
-      - name: Log into registry ${{ env.REGISTRY }}
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@master
-        with:
-          platforms: all
-
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@master
-        
-      # Extract metadata (tags, labels) for Docker
-      # https://github.com/docker/metadata-action
-      - name: Extract Docker metadata
-        id: meta
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}-arm64
-            type=semver,pattern={{major}}.{{minor}}-arm64
-
-      # Build and push Docker image with Buildx (don't push on PR)
-      # https://github.com/docker/build-push-action
-      - name: Build Docker image
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
-        with:
-          builder: ${{ steps.buildx.outputs.name }}
-          context: .
-          file: Dockerfile.arch
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          build-args: |
-            "ARCHITECTURE=arm64"
-            "GCC_BUILD_TARGET=aarch64-linux-gnu"
-            "CARGO_BUILD_TARGET=aarch64-unknown-linux-gnu"
-            
-  multiarch:
-
-    runs-on: ubuntu-latest
-    needs: [amd64, arm64]
-
-    steps:
-      - name: Check Out Repo 
-        uses: actions/checkout@v2
-
-      - name: Log into registry ${{ env.REGISTRY }}
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
       - name: Extract Docker metadata
@@ -165,52 +54,24 @@ jobs:
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-        
-      # Extract metadata (tags, labels) for Docker
-      # https://github.com/docker/metadata-action
-      - name: Extract Docker metadata for AMD64
-        id: meta_amd64
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@master
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}-amd64
-            type=semver,pattern={{major}}.{{minor}}-amd64
-      
-      # Extract metadata (tags, labels) for Docker
-      # https://github.com/docker/metadata-action
-      - name: Extract Docker metadata for ARM64
-        id: meta_arm64
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+          platforms: all
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@master
+
+      # Build and push Docker image with Buildx (don't push on PR)
+      # https://github.com/docker/build-push-action
+      - name: Build and push Docker image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}-arm64
-            type=semver,pattern={{major}}.{{minor}}-arm64
-
-      - name: Create Manifest
-        id: docker_manifest
-        run: |-
-          docker manifest create  ${{ steps.meta.outputs.tags }} \
-          ${{ steps.meta_amd64.outputs.tags }} \
-          ${{ steps.meta_arm64.outputs.tags }}
-
-      - name: AMD64
-        id: x86_64
-        run: docker manifest annotate --arch amd64 --os linux ${{ steps.meta.outputs.tags }} ${{ steps.meta_amd64.outputs.tags }}
-        
-      - name: ARM64
-        id: arm64
-        run: docker manifest annotate --arch arm64 --variant v8 --os linux ${{ steps.meta.outputs.tags }} ${{ steps.meta_arm64.outputs.tags }}
-
-      - name: Push Manifest
-        id: docker_push
-        run: docker manifest push ${{ steps.meta.outputs.tags }}
-        
-      - name: Inspect Manifest
-        id: docker_inspect
-        run: docker manifest inspect ${{ steps.meta.outputs.tags }}
+          builder: ${{ steps.buildx.outputs.name }}
+          platforms: linux/amd64,linux/arm64
+          file: XDockerfile
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
