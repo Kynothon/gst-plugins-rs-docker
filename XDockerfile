@@ -27,7 +27,7 @@ RUN dpkg --add-architecture ${TARGETARCH} && \
     	llvm-dev \
 	libclang-dev \
 	clang \
-	gcc-${XCOMPILER_TARGET}
+	gcc-${XCOMPILER_TARGET} \
 	libssl-dev:${TARGETARCH} \
 	libgstreamer-plugins-base1.0-dev:${TARGETARCH} \
 	libgstreamer1.0-dev:${TARGETARCH}  \
